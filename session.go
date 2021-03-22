@@ -1442,7 +1442,7 @@ func (s *session) handleCloseError(closeErr closeError) {
 		s.datagramQueue.CloseWithError(quicErr)
 	}
 
-	if s.tracer != nil {
+	if s.tracer != nil && !errors.Is(closeErr.err, errCloseForRecreating{}) {
 		// timeout errors are logged as soon as they occur (to distinguish between handshake and idle timeouts)
 		if nerr, ok := closeErr.err.(net.Error); !ok || !nerr.Timeout() {
 			var resetErr statelessResetErr
